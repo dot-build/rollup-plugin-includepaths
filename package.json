@@ -1,0 +1,25 @@
+{
+  "name": "rollup-plugin-includepaths",
+  "version": "0.1.0",
+  "description": "Rollup plugin to use relative paths in your project files",
+  "main": "src/plugin.es5.js",
+  "jsnext:main": "src/plugin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dot-build/rollup-plugin-includepaths.git"
+  },
+  "keywords": [
+    "rollup-plugin",
+    "rollup",
+    "es6"
+  ],
+  "author": "Darlan Alves <me@darlanalv.es>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dot-build/rollup-plugin-includepaths/issues"
+  },
+  "homepage": "https://github.com/dot-build/rollup-plugin-includepaths#readme"
+}
