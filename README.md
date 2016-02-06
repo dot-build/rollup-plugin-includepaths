@@ -15,7 +15,9 @@ import { Bar } from 'two/bar';
 
 In your rollup configuration file:
 
-```
+```js
+
+import includePaths from 'rollup-plugin-includepaths';
 
 let includePathOptions = {
     include: {},
@@ -24,10 +26,12 @@ let includePathOptions = {
     extensions: ['.js', '.json', '.html']
 };
 
-// ...
-     {
-          plugins: [ includePaths(includePathOptions) ],
-     }
+export default {
+    entry: './app.js',
+    format: 'cjs',
+    dest: 'public/app.min.js',
+    plugins: [ includePaths(includePathOptions) ],
+};
 
 ```
 
@@ -37,7 +41,7 @@ let includePathOptions = {
 
 An array of source paths in your project where the plugin should look for files
 
-Example: ['src/lib', 'src/foo']
+Example: `['src/lib', 'src/foo']`
 
 ### include
 
@@ -47,8 +51,8 @@ the search with a static path (like Browserify does with the "browser" config)
 Example:
 
 ```js
-{
-     angular: 'bower_components/angular/angular.js'
+include: {
+     'angular': 'bower_components/angular/angular.js'
 }
 ```
 
@@ -60,4 +64,4 @@ An array of module names that should be excluded from the bundle
 
 An array of file extensions to look for in the project.
 
-Default: ['.js', '.json']
+Default: `['.js', '.json']`
