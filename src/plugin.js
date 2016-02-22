@@ -154,10 +154,14 @@ class RollupIncludePaths {
     searchProjectModule (file) {
         let newPath;
         let includePath = this.projectPaths;
+        let workingDir = process.cwd();
 
         for (let i = 0, ii = includePath.length; i < ii ; i++) {
-            newPath = this.resolvePath(path.resolve(process.cwd(), includePath[i], file), true);
+            newPath = this.resolvePath(path.resolve(workingDir, includePath[i], file), true);
+            if (newPath) return newPath;
 
+            // #1 - also check for 'path/to/file' + 'index.js'
+            newPath = this.resolvePath(path.resolve(workingDir, includePath[i], file, 'index.js'), false);
             if (newPath) return newPath;
         }
 

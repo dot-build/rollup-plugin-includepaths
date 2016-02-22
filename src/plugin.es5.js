@@ -186,10 +186,14 @@ var RollupIncludePaths = (function () {
         value: function searchProjectModule(file) {
             var newPath;
             var includePath = this.projectPaths;
+            var workingDir = process.cwd();
 
             for (var i = 0, ii = includePath.length; i < ii; i++) {
-                newPath = this.resolvePath(_path2['default'].resolve(process.cwd(), includePath[i], file), true);
+                newPath = this.resolvePath(_path2['default'].resolve(workingDir, includePath[i], file), true);
+                if (newPath) return newPath;
 
+                // #1 - also check for 'path/to/file' + 'index.js'
+                newPath = this.resolvePath(_path2['default'].resolve(workingDir, includePath[i], file, 'index.js'), false);
                 if (newPath) return newPath;
             }
 
