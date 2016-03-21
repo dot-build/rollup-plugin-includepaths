@@ -55,7 +55,7 @@ var RollupIncludePaths = (function () {
         options = options || {};
 
         // include paths
-        this.projectPaths = options.paths;
+        this.projectPaths = options.paths || [''];
 
         this.cache = {};
         if (options.include) {

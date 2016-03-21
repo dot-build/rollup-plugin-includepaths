@@ -3,6 +3,7 @@ import fs from 'fs';
 
 /**
  * Node.JS modules ignored in the resolveId method by default
+ * TODO use https://www.npmjs.com/package/builtin-modules
  */
 const externalModules = ['assert', 'buffer', 'console', 'constants', 'crypto',
     'domain', 'events', 'http', 'https', 'os', 'path', 'punycode', 'querystring',
@@ -35,7 +36,7 @@ class RollupIncludePaths {
         options = options || {};
 
         // include paths
-        this.projectPaths = options.paths;
+        this.projectPaths = options.paths || [''];
 
         this.cache = {};
         if (options.include) {
