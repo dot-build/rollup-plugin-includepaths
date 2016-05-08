@@ -61,6 +61,9 @@ class RollupIncludePaths {
      * @param {string} [origin]     Origin of the module request
      */
     resolveId(id, origin) {
+        if (/^\.{0,2}\//.test(id)) {
+            return null;
+        }
         origin = origin || false;
         return this.resolveCachedPath(id) || this.searchModule(id, origin);
     }
@@ -130,9 +133,7 @@ class RollupIncludePaths {
      * @param {string} [origin]     Origin of the module request
      */
     searchModule (file, origin) {
-        let newPath =
-            this.searchRelativePath(file, origin) ||
-            this.searchProjectModule(file, origin);
+        let newPath = this.searchProjectModule(file, origin);
 
         if (newPath) {
             // add result to cache
@@ -167,32 +168,6 @@ class RollupIncludePaths {
         }
 
         return null;
-    }
-
-    /**
-     * Sarch for a file relative to who required it
-     *
-     * @param {string} file         File path to search
-     * @param {string} [origin]     Origin of the module request
-     */
-    searchRelativePath (file, origin) {
-        if (!origin) {
-            return null;
-        }
-
-        let basePath = path.dirname(origin);
-
-        return (
-            // common case
-            // require('./file.js') in 'path/origin.js'
-            // > path/file.js
-            this.resolvePath(path.join(basePath, file), true) ||
-
-            // nodejs path case
-            // require('./subfolder') in 'lib/origin.js'
-            // > lib/subfolder/index.js
-            this.resolvePath(path.join(basePath, file, 'index.js'), false)
-        );
     }
 
     /**

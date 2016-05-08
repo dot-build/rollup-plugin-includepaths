@@ -85,6 +85,9 @@ var RollupIncludePaths = (function () {
     _createClass(RollupIncludePaths, [{
         key: 'resolveId',
         value: function resolveId(id, origin) {
+            if (/^\.{0,2}\//.test(id)) {
+                return null;
+            }
             origin = origin || false;
             return this.resolveCachedPath(id) || this.searchModule(id, origin);
         }
@@ -161,7 +164,7 @@ var RollupIncludePaths = (function () {
     }, {
         key: 'searchModule',
         value: function searchModule(file, origin) {
-            var newPath = this.searchRelativePath(file, origin) || this.searchProjectModule(file, origin);
+            var newPath = this.searchProjectModule(file, origin);
 
             if (newPath) {
                 // add result to cache
@@ -198,34 +201,6 @@ var RollupIncludePaths = (function () {
             }
 
             return null;
-        }
-
-        /**
-         * Sarch for a file relative to who required it
-         *
-         * @param {string} file         File path to search
-         * @param {string} [origin]     Origin of the module request
-         */
-    }, {
-        key: 'searchRelativePath',
-        value: function searchRelativePath(file, origin) {
-            if (!origin) {
-                return null;
-            }
-
-            var basePath = _path2['default'].dirname(origin);
-
-            return(
-                // common case
-                // require('./file.js') in 'path/origin.js'
-                // > path/file.js
-                this.resolvePath(_path2['default'].join(basePath, file), true) ||
-
-                // nodejs path case
-                // require('./subfolder') in 'lib/origin.js'
-                // > lib/subfolder/index.js
-                this.resolvePath(_path2['default'].join(basePath, file, 'index.js'), false)
-            );
         }
 
         /**
