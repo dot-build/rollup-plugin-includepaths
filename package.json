@@ -4,8 +4,11 @@
   "description": "Rollup plugin to use relative paths in your project files",
   "main": "src/plugin.es5.js",
   "jsnext:main": "src/plugin.js",
+  "files": [
+    "src"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublish": "babel src/plugin.js --out-file src/plugin.es5.js"
   },
   "repository": {
     "type": "git",
