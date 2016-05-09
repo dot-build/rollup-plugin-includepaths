@@ -1,16 +1,12 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-exports['default'] = plugin;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+exports.default = plugin;
 
 var _path = require('path');
 
@@ -20,14 +16,19 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 /**
  * Node.JS modules ignored in the resolveId method by default
+ * TODO use https://www.npmjs.com/package/builtin-modules
  */
 var externalModules = ['assert', 'buffer', 'console', 'constants', 'crypto', 'domain', 'events', 'http', 'https', 'os', 'path', 'punycode', 'querystring', 'stream', 'string_decoder', 'timers', 'tty', 'url', 'util', 'vm', 'zlib'];
 
 var defaultExtensions = ['.js', '.json'];
 
-var RollupIncludePaths = (function () {
+var RollupIncludePaths = function () {
     /**
      * Options:
      *
@@ -82,11 +83,12 @@ var RollupIncludePaths = (function () {
      * @param {string} [origin]     Origin of the module request
      */
 
+
     _createClass(RollupIncludePaths, [{
         key: 'resolveId',
         value: function resolveId(id, origin) {
             origin = origin || false;
-            return this.resolveCachedPath(id) || this.searchModule(id, origin);
+            return this.resolveCachedPath(id, origin) || this.searchModule(id, origin);
         }
 
         /**
@@ -95,6 +97,7 @@ var RollupIncludePaths = (function () {
          *
          * @param {Object} options
          */
+
     }, {
         key: 'options',
         value: function options(_options) {
@@ -115,6 +118,7 @@ var RollupIncludePaths = (function () {
          *
          * @param {Object} paths
          */
+
     }, {
         key: 'copyStaticPathsToCache',
         value: function copyStaticPathsToCache(staticPaths) {
@@ -144,20 +148,29 @@ var RollupIncludePaths = (function () {
          * @param {string} id
          * @return {string|nulld}
          */
+
     }, {
         key: 'resolveCachedPath',
-        value: function resolveCachedPath(id) {
-            if (id in this.cache) {
-                return this.cache[id];
+        value: function resolveCachedPath(id, origin) {
+            var key = this.getCacheKey(id, origin);
+
+            if (key in this.cache) {
+                return this.cache[key];
             }
 
             return false;
+        }
+    }, {
+        key: 'getCacheKey',
+        value: function getCacheKey(id, origin) {
+            return origin ? origin + ':' + id : id;
         }
 
         /**
          * @param {string} file         File path to search
          * @param {string} [origin]     Origin of the module request
          */
+
     }, {
         key: 'searchModule',
         value: function searchModule(file, origin) {
@@ -165,7 +178,9 @@ var RollupIncludePaths = (function () {
 
             if (newPath) {
                 // add result to cache
-                this.cache[file] = newPath;
+                var cacheKey = this.getCacheKey(file, origin);
+                this.cache[cacheKey] = newPath;
+
                 return newPath;
             }
 
@@ -181,19 +196,20 @@ var RollupIncludePaths = (function () {
          * @param {string} [origin]     Origin of the module request
          * @return {string|null}
          */
+
     }, {
         key: 'searchProjectModule',
         value: function searchProjectModule(file) {
-            var newPath;
+            var newPath = void 0;
             var includePath = this.projectPaths;
             var workingDir = process.cwd();
 
             for (var i = 0, ii = includePath.length; i < ii; i++) {
-                newPath = this.resolvePath(_path2['default'].resolve(workingDir, includePath[i], file), true);
+                newPath = this.resolvePath(_path2.default.resolve(workingDir, includePath[i], file), true);
                 if (newPath) return newPath;
 
                 // #1 - also check for 'path/to/file' + 'index.js'
-                newPath = this.resolvePath(_path2['default'].resolve(workingDir, includePath[i], file, 'index.js'), false);
+                newPath = this.resolvePath(_path2.default.resolve(workingDir, includePath[i], file, 'index.js'), false);
                 if (newPath) return newPath;
             }
 
@@ -206,6 +222,7 @@ var RollupIncludePaths = (function () {
          * @param {string} file         File path to search
          * @param {string} [origin]     Origin of the module request
          */
+
     }, {
         key: 'searchRelativePath',
         value: function searchRelativePath(file, origin) {
@@ -213,18 +230,18 @@ var RollupIncludePaths = (function () {
                 return null;
             }
 
-            var basePath = _path2['default'].dirname(origin);
+            var basePath = _path2.default.dirname(origin);
 
             return(
                 // common case
                 // require('./file.js') in 'path/origin.js'
                 // > path/file.js
-                this.resolvePath(_path2['default'].join(basePath, file), true) ||
+                this.resolvePath(_path2.default.join(basePath, file), true) ||
 
                 // nodejs path case
                 // require('./subfolder') in 'lib/origin.js'
                 // > lib/subfolder/index.js
-                this.resolvePath(_path2['default'].join(basePath, file, 'index.js'), false)
+                this.resolvePath(_path2.default.join(basePath, file, 'index.js'), false)
             );
         }
 
@@ -242,6 +259,7 @@ var RollupIncludePaths = (function () {
          * @param {boolean} [checkExtensions=false]
          * @return {boolean}
          */
+
     }, {
         key: 'resolvePath',
         value: function resolvePath(file, checkExtensions) {
@@ -268,6 +286,7 @@ var RollupIncludePaths = (function () {
          * @param {string} file
          * @return {boolean}
          */
+
     }, {
         key: 'hasExtension',
         value: function hasExtension(file) {
@@ -278,11 +297,12 @@ var RollupIncludePaths = (function () {
          * @param {string} file
          * @return {boolean}
          */
+
     }, {
         key: 'fileExists',
         value: function fileExists(file) {
             try {
-                var stat = _fs2['default'].statSync(file);
+                var stat = _fs2.default.statSync(file);
                 return stat.isFile();
             } catch (e) {
                 return false;
@@ -291,7 +311,7 @@ var RollupIncludePaths = (function () {
     }]);
 
     return RollupIncludePaths;
-})();
+}();
 
 function plugin(options) {
     var resolver = new RollupIncludePaths(options);
@@ -306,5 +326,3 @@ function plugin(options) {
         }
     };
 }
-
-module.exports = exports['default'];

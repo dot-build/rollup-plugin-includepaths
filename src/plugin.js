@@ -62,7 +62,7 @@ class RollupIncludePaths {
      */
     resolveId(id, origin) {
         origin = origin || false;
-        return this.resolveCachedPath(id) || this.searchModule(id, origin);
+        return this.resolveCachedPath(id, origin) || this.searchModule(id, origin);
     }
 
     /**
@@ -117,12 +117,18 @@ class RollupIncludePaths {
      * @param {string} id
      * @return {string|nulld}
      */
-    resolveCachedPath (id) {
-        if (id in this.cache) {
-            return this.cache[id];
+    resolveCachedPath (id, origin) {
+        const key = this.getCacheKey(id, origin);
+
+        if (key in this.cache) {
+            return this.cache[key];
         }
 
         return false;
+    }
+
+    getCacheKey(id, origin) {
+        return origin ? `${origin}:${id}` : id;
     }
 
     /**
@@ -136,7 +142,9 @@ class RollupIncludePaths {
 
         if (newPath) {
             // add result to cache
-            this.cache[file] = newPath;
+            let cacheKey = this.getCacheKey(file, origin);
+            this.cache[cacheKey] = newPath;
+
             return newPath;
         }
 
