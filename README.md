@@ -47,11 +47,9 @@ By default, resolve files from working dir
 
 ### include
 
-A map of module=>path/to/file.js with custom module paths. Used to override
-the search with a static path (like Browserify does with the "browser" config).
+A map of module=>path/to/file.js with custom module paths. Used to override the search with a static path (like Browserify does with the "browser" config).
 
-Use this option if you want to skip the file resolution and directly resolve a
-module name to a given path.
+Use this option if you want to skip the file resolution and directly resolve a module name to a given path.
 
 Example:
 
@@ -64,7 +62,11 @@ include: {
 
 ### external
 
-An array of module names that should be excluded from the bundle.
+An array of module names that should be excluded from the bundle (external modules).
+
+By default, all the node built-in modules will be marked as external.
+
+To include the built-ins, you can use the [builtins](https://github.com/calvinmetcalf/rollup-plugin-node-builtins) plugin and set this config to an empty array.
 
 Example:
 
