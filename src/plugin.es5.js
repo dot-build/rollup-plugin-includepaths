@@ -49,7 +49,6 @@ var RollupIncludePaths = function () {
      *
      * @param {Object} options
      */
-
     function RollupIncludePaths(options) {
         _classCallCheck(this, RollupIncludePaths);
 
@@ -163,7 +162,7 @@ var RollupIncludePaths = function () {
     }, {
         key: 'getCacheKey',
         value: function getCacheKey(id, origin) {
-            return origin ? origin + ':' + id : id;
+            return id[0] === '.' /* id is a relative path */ ? origin + ':' + id : id;
         }
 
         /**
@@ -232,7 +231,7 @@ var RollupIncludePaths = function () {
 
             var basePath = _path2.default.dirname(origin);
 
-            return(
+            return (
                 // common case
                 // require('./file.js') in 'path/origin.js'
                 // > path/file.js
