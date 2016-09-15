@@ -128,7 +128,9 @@ class RollupIncludePaths {
     }
 
     getCacheKey(id, origin) {
-        return id[0] === '.' /* id is a relative path */ ? `${origin}:${id}` : id;
+        const isRelativePath = id.startsWith('.');
+
+        return isRelativePath ? `${origin}:${id}` : id;
     }
 
     /**
