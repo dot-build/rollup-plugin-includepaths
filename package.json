@@ -8,7 +8,7 @@
     "src"
   ],
   "scripts": {
-    "prepublish": "babel src/plugin.js --out-file src/plugin.es5.js"
+    "xprepublish": "babel src/plugin.js --out-file src/plugin.es5.js"
   },
   "repository": {
     "type": "git",
