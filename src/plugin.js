@@ -168,11 +168,12 @@ class RollupIncludePaths {
         let workingDir = process.cwd();
 
         for (let i = 0, ii = includePath.length; i < ii ; i++) {
-            newPath = this.resolvePath(path.resolve(workingDir, includePath[i], file), true);
+            newPath = this.resolvePath(path.resolve(workingDir, includePath[i], file));
             if (newPath) return newPath;
 
-            // #1 - also check for 'path/to/file' + 'index.js'
-            newPath = this.resolvePath(path.resolve(workingDir, includePath[i], file, 'index.js'), false);
+            // #1 - also check for 'path/to/file/index.js'
+            // #4 - also check for 'path/to/file/index.[extensions]'
+            newPath = this.resolvePath(path.resolve(workingDir, includePath[i], file, 'index'));
             if (newPath) return newPath;
         }
 
@@ -196,42 +197,38 @@ class RollupIncludePaths {
             // common case
             // require('./file.js') in 'path/origin.js'
             // > path/file.js
-            this.resolvePath(path.join(basePath, file), true) ||
+            this.resolvePath(path.join(basePath, file)) ||
 
             // nodejs path case
             // require('./subfolder') in 'lib/origin.js'
             // > lib/subfolder/index.js
-            this.resolvePath(path.join(basePath, file, 'index.js'), false)
+            this.resolvePath(path.join(basePath, file, 'index'))
         );
     }
 
     /**
-     * Resolve a given file path by checking if it exists and
-     * optionally also checking if it exists if an extension is
-     * appended to file name.
-     *
-     * If checkExtensions is true, checks for 'file', then 'file.js', 'file.json'
+     * Resolve a given file path by checking if it exists. If it does not,
+     * also checks if the file exists by appending the extensions to it,
+     * i.e. checks for 'file', then 'file.js', 'file.json'
      * and so on, until one is found.
      *
      * Returns false if "file" was not found
      *
      * @param {string} file
-     * @param {boolean} [checkExtensions=false]
      * @return {boolean}
      */
-    resolvePath (file, checkExtensions) {
+    resolvePath (file) {
         if (this.fileExists(file)) {
             return file;
         }
 
-        if (checkExtensions) {
-            for (let i = 0, ii = this.extensions.length; i < ii; i++ ) {
-                let ext = this.extensions[i];
-                let newPath = file + ext;
+        // check different file extensions
+        for (let i = 0, ii = this.extensions.length; i < ii; i++ ) {
+            let ext = this.extensions[i];
+            let newPath = file + ext;
 
-                if (this.fileExists(newPath)) {
-                    return newPath;
-                }
+            if (this.fileExists(newPath)) {
+                return newPath;
             }
         }
 

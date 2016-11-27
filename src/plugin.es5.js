@@ -162,7 +162,9 @@ var RollupIncludePaths = function () {
     }, {
         key: 'getCacheKey',
         value: function getCacheKey(id, origin) {
-            return id[0] === '.' /* id is a relative path */ ? origin + ':' + id : id;
+            var isRelativePath = id.startsWith('.');
+
+            return isRelativePath ? origin + ':' + id : id;
         }
 
         /**
@@ -204,11 +206,12 @@ var RollupIncludePaths = function () {
             var workingDir = process.cwd();
 
             for (var i = 0, ii = includePath.length; i < ii; i++) {
-                newPath = this.resolvePath(_path2.default.resolve(workingDir, includePath[i], file), true);
+                newPath = this.resolvePath(_path2.default.resolve(workingDir, includePath[i], file));
                 if (newPath) return newPath;
 
-                // #1 - also check for 'path/to/file' + 'index.js'
-                newPath = this.resolvePath(_path2.default.resolve(workingDir, includePath[i], file, 'index.js'), false);
+                // #1 - also check for 'path/to/file/index.js'
+                // #4 - also check for 'path/to/file/index.[extensions]'
+                newPath = this.resolvePath(_path2.default.resolve(workingDir, includePath[i], file, 'index'));
                 if (newPath) return newPath;
             }
 
@@ -235,45 +238,41 @@ var RollupIncludePaths = function () {
                 // common case
                 // require('./file.js') in 'path/origin.js'
                 // > path/file.js
-                this.resolvePath(_path2.default.join(basePath, file), true) ||
+                this.resolvePath(_path2.default.join(basePath, file)) ||
 
                 // nodejs path case
                 // require('./subfolder') in 'lib/origin.js'
                 // > lib/subfolder/index.js
-                this.resolvePath(_path2.default.join(basePath, file, 'index.js'), false)
+                this.resolvePath(_path2.default.join(basePath, file, 'index'))
             );
         }
 
         /**
-         * Resolve a given file path by checking if it exists and
-         * optionally also checking if it exists if an extension is
-         * appended to file name.
-         *
-         * If checkExtensions is true, checks for 'file', then 'file.js', 'file.json'
+         * Resolve a given file path by checking if it exists. If it does not,
+         * also checks if the file exists by appending the extensions to it,
+         * i.e. checks for 'file', then 'file.js', 'file.json'
          * and so on, until one is found.
          *
          * Returns false if "file" was not found
          *
          * @param {string} file
-         * @param {boolean} [checkExtensions=false]
          * @return {boolean}
          */
 
     }, {
         key: 'resolvePath',
-        value: function resolvePath(file, checkExtensions) {
+        value: function resolvePath(file) {
             if (this.fileExists(file)) {
                 return file;
             }
 
-            if (checkExtensions) {
-                for (var i = 0, ii = this.extensions.length; i < ii; i++) {
-                    var ext = this.extensions[i];
-                    var newPath = file + ext;
+            // check different file extensions
+            for (var i = 0, ii = this.extensions.length; i < ii; i++) {
+                var ext = this.extensions[i];
+                var newPath = file + ext;
 
-                    if (this.fileExists(newPath)) {
-                        return newPath;
-                    }
+                if (this.fileExists(newPath)) {
+                    return newPath;
                 }
             }
 
@@ -325,4 +324,3 @@ function plugin(options) {
         }
     };
 }
-module.exports = exports['default'];
