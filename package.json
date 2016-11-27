@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-includepaths",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "Rollup plugin to use relative paths in your project files",
   "main": "src/plugin.es5.js",
   "jsnext:main": "src/plugin.js",
