@@ -91,8 +91,12 @@ var RollupIncludePaths = function () {
         }
 
         /**
-         * Rollup plugin method. Modifies the "external" by adding the Node.JS
-         * module names to it.
+         * Rollup plugin method. Modifies the "external" option
+         *
+         * If options.external is a function, follows the Rollup API by keeping the
+         * option as a function (https://github.com/rollup/rollup/wiki/JavaScript-API#external)
+         *
+         * If options.external is an array, append the Node.JS builtin modules to it.
          *
          * @param {Object} options
          */
@@ -100,8 +104,11 @@ var RollupIncludePaths = function () {
     }, {
         key: 'options',
         value: function options(_options) {
-            if (this.externalModules.length) {
-                _options.external = (_options.external || []).concat(this.externalModules);
+            if ('function' === typeof this.externalModules) {
+                _options.external = this.externalModules;
+            } else if (this.externalModules instanceof Array && this.externalModules.length) {
+                var external = _options.external;
+                _options.external = (external && external instanceof Array ? external : []).concat(this.externalModules);
             }
 
             return _options;
