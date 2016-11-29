@@ -331,3 +331,5 @@ function plugin(options) {
         }
     };
 }
+
+module.exports = exports['default'];
