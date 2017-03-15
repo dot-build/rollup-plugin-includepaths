@@ -169,7 +169,7 @@ var RollupIncludePaths = function () {
     }, {
         key: 'getCacheKey',
         value: function getCacheKey(id, origin) {
-            var isRelativePath = id.startsWith('.');
+            var isRelativePath = id.indexOf('.') === 0;
 
             return isRelativePath ? origin + ':' + id : id;
         }
@@ -331,5 +331,4 @@ function plugin(options) {
         }
     };
 }
-
 module.exports = exports['default'];
