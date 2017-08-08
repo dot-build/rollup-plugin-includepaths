@@ -79,11 +79,12 @@ class RollupIncludePaths {
         if ('function' === typeof this.externalModules) {
             options.external = this.externalModules;
 		} else if (this.externalModules instanceof Array && this.externalModules.length) {
-			const external = _options.external;
-			if ('function' === typeof external)
-				_options.external = (id) => external(id) || this.externalModules.indexOf(id) !== -1;
-			else
-				_options.external = (external && external instanceof Array ? external : []).concat(this.externalModules);
+			const external = options.external;
+			if ('function' === typeof external) {
+				options.external = (id) => external(id) || this.externalModules.indexOf(id) !== -1;
+			} else {
+				options.external = (external && external instanceof Array ? external : []).concat(this.externalModules);
+			}
 		}
 
         return options;
