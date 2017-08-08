@@ -103,15 +103,19 @@ var RollupIncludePaths = function () {
 
     }, {
         key: 'options',
-        value: function options(_options) {
+        value: function options(_options2) {
+            var _this = this;
+
             if ('function' === typeof this.externalModules) {
-                _options.external = this.externalModules;
+                _options2.external = this.externalModules;
             } else if (this.externalModules instanceof Array && this.externalModules.length) {
                 var external = _options.external;
-                _options.external = (external && external instanceof Array ? external : []).concat(this.externalModules);
+                if ('function' === typeof external) _options.external = function (id) {
+                    return external(id) || _this.externalModules.indexOf(id) !== -1;
+                };else _options.external = (external && external instanceof Array ? external : []).concat(this.externalModules);
             }
 
-            return _options;
+            return _options2;
         }
 
         /**
@@ -326,8 +330,8 @@ function plugin(options) {
             return resolver.resolveId(file, origin);
         },
 
-        options: function options(_options2) {
-            return resolver.options(_options2);
+        options: function options(_options3) {
+            return resolver.options(_options3);
         }
     };
 }
