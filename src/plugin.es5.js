@@ -103,11 +103,11 @@ var RollupIncludePaths = function () {
 
     }, {
         key: 'options',
-        value: function options(_options2) {
+        value: function options(_options) {
             var _this = this;
 
             if ('function' === typeof this.externalModules) {
-                _options2.external = this.externalModules;
+                _options.external = this.externalModules;
             } else if (this.externalModules instanceof Array && this.externalModules.length) {
                 var external = _options.external;
                 if ('function' === typeof external) _options.external = function (id) {
@@ -115,7 +115,7 @@ var RollupIncludePaths = function () {
                 };else _options.external = (external && external instanceof Array ? external : []).concat(this.externalModules);
             }
 
-            return _options2;
+            return _options;
         }
 
         /**
@@ -330,8 +330,8 @@ function plugin(options) {
             return resolver.resolveId(file, origin);
         },
 
-        options: function options(_options3) {
-            return resolver.options(_options3);
+        options: function options(_options) {
+            return resolver.options(_options);
         }
     };
 }
