@@ -104,11 +104,19 @@ var RollupIncludePaths = function () {
     }, {
         key: 'options',
         value: function options(_options) {
+            var _this = this;
+
             if ('function' === typeof this.externalModules) {
                 _options.external = this.externalModules;
             } else if (this.externalModules instanceof Array && this.externalModules.length) {
                 var external = _options.external;
-                _options.external = (external && external instanceof Array ? external : []).concat(this.externalModules);
+                if ('function' === typeof external) {
+                    _options.external = function (id) {
+                        return external(id) || _this.externalModules.indexOf(id) !== -1;
+                    };
+                } else {
+                    _options.external = (external && external instanceof Array ? external : []).concat(this.externalModules);
+                }
             }
 
             return _options;
