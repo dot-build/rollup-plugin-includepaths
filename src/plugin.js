@@ -114,7 +114,7 @@ class RollupIncludePaths {
          * @return {string}
          */
         function resolveJsExtension (file) {
-            if (/\.js$/.test(file) === false) {
+            if ((/\.js$/).test(file) === false) {
                 file += '.js';
             }
 
