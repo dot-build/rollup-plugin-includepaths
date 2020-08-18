@@ -15,8 +15,7 @@
   },
   "scripts": {
     "lint": "eslint src/plugin.js",
-    "build": "babel src/plugin.js --out-file src/plugin.es5.js",
-    "prepublish": "npm run lint && npm run build"
+    "build": "babel src/plugin.js --out-file src/plugin.es5.js"
   },
   "repository": {
     "type": "git",
